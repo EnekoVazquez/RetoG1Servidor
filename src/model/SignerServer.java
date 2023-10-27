@@ -22,7 +22,7 @@ public class SignerServer {
     /**
      * ResourceBundle para parámetros de configuración.
      */
-    private static final ResourceBundle RETO1 = ResourceBundle.getBundle("model.Config");
+    private static final ResourceBundle RETO1 = ResourceBundle.getBundle("model.configBD");
 
     /**
      * Puerto utilizado para la comunicación con el servidor.
