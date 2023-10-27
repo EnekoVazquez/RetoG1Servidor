@@ -35,12 +35,19 @@ public class Pool {
 
     private static Stack<Connection> poolStack = new Stack<>();
 
-    public Connection openConnection() throws ConnectionException, NoOperativeDataBaseException {
+    public Pool(ResourceBundle configBD, String driver, String url, String user, String pass) {
         this.configBD = ResourceBundle.getBundle("");
         this.driver = configBD.getString("DRIVER");
         this.url = configBD.getString("CONN");
         this.user = configBD.getString("DBUSER");
         this.pass = configBD.getString("DBPASS");
+    }
+
+    public Pool() {
+
+    }
+
+    public Connection openConnection() throws ConnectionException, NoOperativeDataBaseException {
         try {
             Connection conn = DriverManager.getConnection(url, user, pass);
 
