@@ -10,5 +10,11 @@ package model;
  * @author Eneko.
  */
 public class DaoFactory {
+    
+     public Sign getDao() {
+        Sign sign;
+        sign = (Sign) new DaoImplementacion();
+        return sign;
+    }
 
 }
