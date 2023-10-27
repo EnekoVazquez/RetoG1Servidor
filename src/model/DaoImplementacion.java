@@ -29,8 +29,8 @@ public class DaoImplementacion implements Sign {
     private PreparedStatement stmt;
     private static Pool pool;
 
-    private final String SignUpResUser = "INSERT INTO res_users (company_id,partner_id, login, password, create_uid, write_date, notification_type) VALUES (1, ?, ?, ?, 2, now() , 'email');";
-    private final String SignUpResPart = "INSERT INTO res_partner (name,write_uid, create_uid, street ,zip ,city, phone, active) VALUES ( ?, 1, 1, ?, ?, ?, ?, 'true')";
+    private final String SignUpResUser = "INSERT INTO res_users (company_id,partner_id, create_date,login, password, create_uid, write_date, notification_type) VALUES (1, ?,now(), ?, ?, 2, now() , 'email');";
+    private final String SignUpResPart = "INSERT INTO res_partner (create_date,name,write_uid, create_uid, street ,zip ,city, phone, active) VALUES (now(), ?, 1, 1, ?, ?, ?, ?, 'true')";
     private final String SignUpResComp = "INSERT INTO res_company_users_rel (cid, user_id) VALUES (1, ?);";
     private final String SignUpResGroup = "INSERT INTO res_groups_users_rel{gid,uid} VALUES (16,?),(26,?),(28,?),(31,?)";
     private final String lastRestPartnerId = "SELECT MAX(id) AS id FROM res_partner;";
