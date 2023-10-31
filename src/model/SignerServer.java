@@ -66,7 +66,9 @@ public class SignerServer {
                     conexionCreada(signT);
                 } else {
 
+                    sokClient = svSocket.accept();
                     ObjectOutputStream oos = new ObjectOutputStream(sokClient.getOutputStream());
+
                     encapsu.setMessage(MessageType.MAX_USER);
                     oos.writeObject(encapsu);
                 }
@@ -75,7 +77,7 @@ public class SignerServer {
 
         } catch (IOException ex) {
             Logger.getLogger(SignerServer.class.getName()).log(Level.SEVERE, null, ex);
-            
+
         } finally {
             try {
                 svSocket.close();

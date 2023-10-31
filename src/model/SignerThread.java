@@ -94,6 +94,8 @@ public class SignerThread extends Thread {
             Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
+                
+                SignerServer.borrarConexion(this);
 
                 ois.close();
                 oos.close();
