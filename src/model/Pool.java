@@ -1,56 +1,44 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
 import exception.ConnectionException;
 import exception.NoOperativeDataBaseException;
 import exception.TimeOutException;
-import java.net.ConnectException;
+
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.logging.Logger;
-import java.sql.DriverManager;
 import java.util.logging.Level;
 
 /**
- *
- * @author Eneko.
+ * Pool de conexiones a la base de datos.
  */
 public class Pool {
 
     private static final Logger LOG = Logger.getLogger(Pool.class.getName());
 
-    private ResourceBundle configBD;
     private String driver;
     private String url;
     private String user;
     private String pass;
 
     private static Pool pool;
-
     private static Stack<Connection> poolStack = new Stack<>();
 
-    public Pool(ResourceBundle configBD, String driver, String url, String user, String pass) {
-        this.configBD = ResourceBundle.getBundle("");
-        this.driver = configBD.getString("DRIVER");
-        this.url = configBD.getString("CONN");
-        this.user = configBD.getString("DBUSER");
-        this.pass = configBD.getString("DBPASS");
-    }
-
     public Pool() {
-
+        // Configura los valores de conexión desde un archivo de propiedades (configBD.properties)
+        ResourceBundle configBD = ResourceBundle.getBundle("model.configBD"); // Nombre del archivo de propiedades
+        this.driver = configBD.getString("Driver");
+        this.url = configBD.getString("Conn");
+        this.user = configBD.getString("DBUser");
+        this.pass = configBD.getString("DBPass");
     }
 
     public Connection openConnection() throws ConnectionException, NoOperativeDataBaseException {
         try {
             Connection conn = DriverManager.getConnection(url, user, pass);
-
             return conn;
         } catch (SQLException e) {
             throw new NoOperativeDataBaseException(url);
@@ -64,7 +52,7 @@ public class Pool {
         return pool;
     }
 
-    public Connection getConnection() throws TimeOutException {
+    public synchronized Connection getConnection() throws TimeOutException {
         Connection conn = null;
         if (poolStack.size() > 0) {
             conn = poolStack.pop();
@@ -81,8 +69,7 @@ public class Pool {
     }
 
     public void returnConnection(Connection con) throws TimeOutException {
-        LOG.info("Devolver una conexion");
+        LOG.info("Devolver una conexión");
         poolStack.push(con);
     }
-
 }
