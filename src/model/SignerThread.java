@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SignerThread extends Thread {
+
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private Socket soc;
@@ -27,7 +28,6 @@ public class SignerThread extends Thread {
     public void run() {
         try {
             ois = new ObjectInputStream(soc.getInputStream());
-           
 
             DaoFactory daofact = new DaoFactory();
             sign = daofact.getDao();
@@ -48,11 +48,7 @@ public class SignerThread extends Thread {
                     encap.setMessage(MessageType.ERROR_RESPONSE);
                     break;
             }
-            oos = new ObjectOutputStream(soc.getOutputStream());
-            oos.writeObject(encap);
-        } catch (IOException | ClassNotFoundException e) {
-            encap.setMessage(MessageType.ERROR_RESPONSE);
-            Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, e);
+
         } catch (UserNotFoundException e) {
             encap.setMessage(MessageType.USER_NOT_FOUND_RESPONSE);
             Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, e);
@@ -63,14 +59,24 @@ public class SignerThread extends Thread {
             Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, ex);
         } catch (CredentialErrorException ex) {
             Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | ClassNotFoundException e) {
+            encap.setMessage(MessageType.ERROR_RESPONSE);
+            Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             try {
-                if (ois != null) ois.close();
-                if (oos != null) oos.close();
+                oos = new ObjectOutputStream(soc.getOutputStream());
+                oos.writeObject(encap);
+                if (ois != null) {
+                    ois.close();
+                }
+                if (oos != null) {
+                    oos.close();
+                }
                 soc.close();
             } catch (IOException ex) {
                 Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
     }
 }
