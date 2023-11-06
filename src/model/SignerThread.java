@@ -19,7 +19,7 @@ public class SignerThread extends Thread {
     private Sign sign;
     private Encapsulator encap;
     private User user;
-
+    private static final Logger LOGGER = Logger.getLogger(SignerThread.class.getName());
     public SignerThread(Socket soc) {
         this.soc = soc;
     }
@@ -36,11 +36,13 @@ public class SignerThread extends Thread {
 
             switch (encap.getMessage()) {
                 case SIGNIN_REQUEST:
+                    LOGGER.info("Realizando operacion de SIGN IN");
                     user = sign.getExecuteSignIn(encap.getUser());
                     encap.setUser(user);
                     encap.setMessage(MessageType.OK_RESPONSE);
                     break;
                 case SIGNUP_REQUEST:
+                    LOGGER.info("Realizando operacion de SIGN UP");
                     sign.getExecuteSignUp(encap.getUser());
                     encap.setMessage(MessageType.OK_RESPONSE);
                     break;

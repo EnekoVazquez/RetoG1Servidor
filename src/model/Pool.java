@@ -36,16 +36,19 @@ public class Pool {
         this.pass = configBD.getString("DBPass");
     }
 
-    public Connection openConnection() throws ConnectionException, NoOperativeDataBaseException {
+    public synchronized Connection openConnection() throws ConnectionException, NoOperativeDataBaseException {
         try {
+            LOG.info("Estamos entrando a la conexion");
             Connection conn = DriverManager.getConnection(url, user, pass);
             return conn;
         } catch (SQLException e) {
+        
             throw new NoOperativeDataBaseException(url);
         }
     }
 
-    public static Pool getPool() {
+    public synchronized static Pool getPool() {
+        LOG.info("Ejecutando metodo getPool");
         if (pool == null) {
             pool = new Pool();
         }
@@ -53,6 +56,7 @@ public class Pool {
     }
 
     public synchronized Connection getConnection() throws TimeOutException {
+        LOG.info("Recogiendo las conexiones del pool");
         Connection conn = null;
         if (poolStack.size() > 0) {
             conn = poolStack.pop();
@@ -68,7 +72,7 @@ public class Pool {
         return conn;
     }
 
-    public void returnConnection(Connection con) throws TimeOutException {
+    public synchronized void returnConnection(Connection con) throws TimeOutException {
         LOG.info("Devolver una conexión");
         poolStack.push(con);
     }
