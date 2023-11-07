@@ -5,6 +5,7 @@
  */
 package model;
 
+import exception.MaxUsersException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -59,12 +60,18 @@ public class SignerServer {
                         signT = new SignerThread(sokClient);
                         signT.start();
                         conexionCreada(signT);
+                    }else{
+                        isServerRunning=false;
+                        throw new MaxUsersException("demasiados usuarios conectados la base de datos espere su turno");
+                        
                     }
                 } catch (IOException e) {
                     // Maneja la excepción si se produce un error al aceptar la conexión.
                     if (!isServerRunning) {
                         break; // Si el servidor se está apagando, sale del bucle.
                     }
+                } catch (MaxUsersException ex) {
+                    Logger.getLogger(SignerServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         } catch (IOException ex) {

@@ -58,6 +58,7 @@ public class SignerThread extends Thread {
             encap.setMessage(MessageType.ERROR_RESPONSE);
             Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, e);
         } catch (UserAlreadyExistsException ex) {
+            encap.setMessage(MessageType.USER_ALREADY_EXISTS_RESPONSE);
             Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, ex);
         } catch (CredentialErrorException ex) {
             Logger.getLogger(SignerThread.class.getName()).log(Level.SEVERE, null, ex);
