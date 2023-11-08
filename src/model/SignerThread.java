@@ -69,6 +69,7 @@ public class SignerThread extends Thread {
             try {
                 oos = new ObjectOutputStream(soc.getOutputStream());
                 oos.writeObject(encap);
+                SignerServer.borrarConexion(this);
                 if (ois != null) {
                     ois.close();
                 }

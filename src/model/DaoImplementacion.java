@@ -73,7 +73,7 @@ public class DaoImplementacion implements Sign {
                 stmt.executeUpdate();
 
                 stmt = conn.prepareStatement(SignUpResUser);
-                stmt.setInt(1, lastIdPartner);
+                stmt.setInt(1, lastIdPartner +1);
                 stmt.setString(2, user.getEmail());
                 stmt.setString(3, user.getPassword());
                 stmt.executeUpdate();

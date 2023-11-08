@@ -86,4 +86,8 @@ public class SignerServer {
     public static synchronized void conexionCreada(SignerThread signT) {
         user++;
     }
+    //EGO: añadido si falla bye bye
+    public static synchronized void borrarConexion(SignerThread signT) {
+        user--;
+    }
 }
