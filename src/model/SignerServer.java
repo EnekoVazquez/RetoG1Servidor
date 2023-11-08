@@ -45,7 +45,7 @@ public class SignerServer {
                     }
                 }
                 try {
-                    svSocket.close(); // Cierra el servidor
+                    svSocket.close(); // Cierra el servidor.
                 } catch (IOException ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                 }
@@ -86,8 +86,10 @@ public class SignerServer {
     public static synchronized void conexionCreada(SignerThread signT) {
         user++;
     }
+    /*
     //EGO: añadido si falla bye bye
     public static synchronized void borrarConexion(SignerThread signT) {
         user--;
     }
+*/
 }

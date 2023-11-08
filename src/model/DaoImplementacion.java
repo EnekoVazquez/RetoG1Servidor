@@ -32,7 +32,7 @@ public class DaoImplementacion implements Sign {
     private static final Logger LOG = Logger.getLogger(DaoImplementacion.class.getName());
 
     public DaoImplementacion() {
-        connectionBD(); // Llama a la función de inicialización
+        connectionBD(); // Llama a la función de inicialización.
     }
 
     public void connectionBD() {

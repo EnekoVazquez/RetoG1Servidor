@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * Pool de conexiones a la base de datos.
+ * Pool de conexiones a la base de datos..
  */
 public class Pool {
 

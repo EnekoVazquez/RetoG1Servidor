@@ -7,7 +7,7 @@ package model;
 
 /**
  *
- * @author Eneko.
+ * @author Eneko..
  */
 public class DaoFactory {
     
