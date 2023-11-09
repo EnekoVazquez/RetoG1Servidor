@@ -46,7 +46,7 @@ public class DaoImplementacion implements Sign {
         int lastIdUsers = 0;
         ResultSet rs = null;
         Boolean exists;
-        exists = existe(user.getEmail(),user.getPassword());
+        exists = existe(user.getEmail(), user.getPassword());
         try {
             conn = pool.getConnection();
 
@@ -54,6 +54,7 @@ public class DaoImplementacion implements Sign {
             if (exists) {
                 throw new UserAlreadyExistsException("El usuario ya existe en la base de datos");
             } else {
+                conn.setAutoCommit(false);
                 stmt = conn.prepareStatement(lastRestPartnerId);
                 rs = stmt.executeQuery();
 
@@ -73,7 +74,7 @@ public class DaoImplementacion implements Sign {
                 stmt.executeUpdate();
 
                 stmt = conn.prepareStatement(SignUpResUser);
-                stmt.setInt(1, lastIdPartner +1);
+                stmt.setInt(1, lastIdPartner + 1);
                 stmt.setString(2, user.getEmail());
                 stmt.setString(3, user.getPassword());
                 stmt.executeUpdate();
@@ -96,11 +97,17 @@ public class DaoImplementacion implements Sign {
                 stmt.setInt(4, lastIdUsers);
                 stmt.executeUpdate();
 
+                conn.commit();
             }
 
         } catch (TimeOutException ex) {
             Logger.getLogger(DaoImplementacion.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(DaoImplementacion.class.getName()).log(Level.SEVERE, null, ex1);
+            }
             Logger.getLogger(DaoImplementacion.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
@@ -114,7 +121,7 @@ public class DaoImplementacion implements Sign {
             } catch (SQLException ex) {
                 Logger.getLogger(DaoImplementacion.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
         return user;
     }
@@ -125,7 +132,7 @@ public class DaoImplementacion implements Sign {
 
         try {
             conn = pool.getConnection();
-            if (!existe(user.getEmail(),user.getPassword())) {
+            if (!existe(user.getEmail(), user.getPassword())) {
                 throw new UserNotFoundException("Usuario no encontrado");
             } else {
                 stmt = conn.prepareStatement(confirmSignIn);
