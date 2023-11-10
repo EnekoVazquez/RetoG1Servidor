@@ -4,14 +4,3 @@
  * and open the template in the editor.
  */
 package exception;
-
-/**
- *
- * @author Eneko..
- */
-public class ConnectionException extends Exception {
-
-    public ConnectionException(String message) {
-        super(message);
-    }
-}

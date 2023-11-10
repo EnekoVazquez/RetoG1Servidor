@@ -7,7 +7,7 @@ package exception;
 
 /**
  *
- * @author Eneko.
+ * @author Eneko..
  */
 public class TimeOutException extends Exception {
 

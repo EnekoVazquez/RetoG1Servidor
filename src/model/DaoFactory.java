@@ -7,8 +7,19 @@ package model;
 
 /**
  *
- * @author Eneko.
+ * @author Eneko
  */
 public class DaoFactory {
+
+    /**
+     * Devuelve una instancia de la implementación del Dao.
+     *
+     * @return Una instancia de la implementación del Dao.
+     */
+    public Sign getDao() {
+        Sign sign;
+        sign = (Sign) new DaoImplementacion();
+        return sign;
+    }
 
 }
