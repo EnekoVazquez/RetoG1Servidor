@@ -1,13 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Clase que representa el servidor de un sistema de firma electrónica.
+ * Este servidor acepta conexiones de clientes y asigna un hilo de ejecución (SignerThread) a cada conexión entrante.
+ * Implementa un mecanismo de detección de tecla para permitir al usuario detener el servidor presionando 'q' y luego Enter.
+ * Utiliza un archivo de propiedades (configBD.properties) para configurar el puerto del servidor y el número máximo de usuarios permitidos.
+ *
+ * @author Eneko, Egoitz y Josu
+ * @version 1.0
  */
 package model;
 
 import exception.MaxUsersException;
+
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ResourceBundle;
@@ -15,6 +19,9 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Servidor para un sistema de firma electrónica.
+ */
 public class SignerServer {
 
     private static final ResourceBundle RETO1 = ResourceBundle.getBundle("model.configBD");
@@ -29,6 +36,13 @@ public class SignerServer {
     private static Integer user = 0;
     private volatile boolean isServerRunning = true; // Variable para controlar el estado del servidor
 
+    /**
+     * Constructor que inicializa y configura el servidor. Crea un ServerSocket
+     * en el puerto especificado en el archivo de propiedades. Inicia un hilo
+     * para la detección de tecla que permite detener el servidor. Acepta
+     * conexiones de clientes y crea hilos SignerThread para manejar cada
+     * conexión. Controla el número máximo de usuarios permitidos.
+     */
     public SignerServer() {
         try {
             svSocket = new ServerSocket(PUERTO);
@@ -60,10 +74,9 @@ public class SignerServer {
                         signT = new SignerThread(sokClient);
                         signT.start();
                         conexionCreada(signT);
-                    }else{
-                        isServerRunning=false;
-                        throw new MaxUsersException("demasiados usuarios conectados la base de datos espere su turno");
-                        
+                    } else {
+                        isServerRunning = false;
+                        throw new MaxUsersException("Demasiados usuarios conectados. Espere su turno para acceder a la base de datos.");
                     }
                 } catch (IOException e) {
                     // Maneja la excepción si se produce un error al aceptar la conexión.
@@ -79,17 +92,29 @@ public class SignerServer {
         }
     }
 
+    /**
+     * Método principal que inicia el servidor.
+     *
+     * @param args Argumentos de la línea de comandos (no se utilizan).
+     */
     public static void main(String[] args) {
         new SignerServer();
     }
 
+    /**
+     * Método synchronized que incrementa el contador de usuarios cuando se
+     * establece una nueva conexión.
+     *
+     * @param signT Objeto SignerThread asociado a la conexión.
+     */
     public static synchronized void conexionCreada(SignerThread signT) {
         user++;
     }
+
     /*
     //EGO: añadido si falla bye bye
     public static synchronized void borrarConexion(SignerThread signT) {
         user--;
     }
-*/
+     */
 }

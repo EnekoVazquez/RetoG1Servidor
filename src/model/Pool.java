@@ -1,3 +1,12 @@
+/**
+ * Pool de conexiones a la base de datos.
+ * Esta clase implementa un pool de conexiones para gestionar la obtención y devolución de conexiones a la base de datos.
+ * Utiliza un archivo de propiedades (configBD.properties) para configurar los parámetros de conexión.
+ * La clase sigue el patrón de diseño Singleton para garantizar una única instancia del pool.
+ *
+ * @author Eneko, Egoitz y Josu
+ * @version 1.0
+ */
 package model;
 
 import exception.ConnectionException;
@@ -13,7 +22,8 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * Pool de conexiones a la base de datos..
+ * Pool de conexiones que gestiona la obtención y devolución de conexiones a la
+ * base de datos.
  */
 public class Pool {
 
@@ -27,8 +37,11 @@ public class Pool {
     private static Pool pool;
     private static Stack<Connection> poolStack = new Stack<>();
 
+    /**
+     * Constructor por defecto que configura los valores de conexión desde un
+     * archivo de propiedades (configBD.properties).
+     */
     public Pool() {
-        // Configura los valores de conexión desde un archivo de propiedades (configBD.properties)
         ResourceBundle configBD = ResourceBundle.getBundle("model.configBD"); // Nombre del archivo de propiedades
         this.driver = configBD.getString("Driver");
         this.url = configBD.getString("Conn");
@@ -36,17 +49,29 @@ public class Pool {
         this.pass = configBD.getString("DBPass");
     }
 
+    /**
+     * Abre una nueva conexión a la base de datos.
+     *
+     * @return Objeto Connection que representa la nueva conexión.
+     * @throws ConnectionException Si no se puede establecer una conexión.
+     * @throws NoOperativeDataBaseException Si la base de datos no está
+     * operativa.
+     */
     public synchronized Connection openConnection() throws ConnectionException, NoOperativeDataBaseException {
         try {
             LOG.info("Estamos entrando a la conexion");
             Connection conn = DriverManager.getConnection(url, user, pass);
             return conn;
         } catch (SQLException e) {
-        
             throw new NoOperativeDataBaseException(url);
         }
     }
 
+    /**
+     * Obtiene la instancia única del pool de conexiones.
+     *
+     * @return Instancia única del pool.
+     */
     public synchronized static Pool getPool() {
         LOG.info("Ejecutando metodo getPool");
         if (pool == null) {
@@ -55,6 +80,13 @@ public class Pool {
         return pool;
     }
 
+    /**
+     * Obtiene una conexión del pool.
+     *
+     * @return Objeto Connection que representa la conexión obtenida.
+     * @throws TimeOutException Si ocurre un timeout al intentar obtener una
+     * conexión.
+     */
     public synchronized Connection getConnection() throws TimeOutException {
         LOG.info("Recogiendo las conexiones del pool");
         Connection conn = null;
@@ -72,6 +104,13 @@ public class Pool {
         return conn;
     }
 
+    /**
+     * Devuelve una conexión al pool.
+     *
+     * @param con Objeto Connection que se va a devolver al pool.
+     * @throws TimeOutException Si ocurre un timeout al intentar devolver la
+     * conexión al pool.
+     */
     public synchronized void returnConnection(Connection con) throws TimeOutException {
         LOG.info("Devolver una conexión");
         poolStack.push(con);

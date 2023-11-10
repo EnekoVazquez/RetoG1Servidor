@@ -1,10 +1,13 @@
+/**
+ * Clase que implementa la interfaz Sign y proporciona funcionalidades relacionadas con la autenticación de usuarios
+ * y la gestión de la base de datos.
+ *
+ * @author Eneko, Egoitz y Josu
+ * @version 1.0
+ */
 package model;
 
-import exception.CredentialErrorException;
-import exception.ServerErrorException;
-import exception.TimeOutException;
-import exception.UserAlreadyExistsException;
-import exception.UserNotFoundException;
+import exception.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,14 +16,19 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Implementación de la interfaz Sign que maneja la autenticación y la gestión
+ * de la base de datos.
+ */
 public class DaoImplementacion implements Sign {
 
     private Connection conn;
     private PreparedStatement stmt;
     private static Pool pool;
 
-    private final String SignUpResUser = "INSERT INTO res_users (company_id,partner_id, write_uid, create_date,login, password, create_uid, write_date, notification_type) VALUES (1, ?, 1, now(), ?, ?, 2, now() , 'email');";
-    private final String SignUpResPart = "INSERT INTO res_partner (id, create_date,name,commercial_partner_id,write_uid, create_uid, street ,zip ,city, phone, active) VALUES (?, now(), ?, ?, 1, 1, ?, ?, ?, ?, 'true')";
+    // Consultas SQL para realizar diversas operaciones en la base de datos
+    private final String SignUpResUser = "INSERT INTO res_users (company_id, partner_id, write_uid, create_date, login, password, create_uid, write_date, notification_type) VALUES (1, ?, 1, now(), ?, ?, 2, now(), 'email');";
+    private final String SignUpResPart = "INSERT INTO res_partner (id, create_date, name, commercial_partner_id, write_uid, create_uid, street, zip, city, phone, active) VALUES (?, now(), ?, ?, 1, 1, ?, ?, ?, ?, 'true')";
     private final String SignUpResComp = "INSERT INTO res_company_users_rel (cid, user_id) VALUES (1, ?);";
     private final String SignUpResGroup = "INSERT INTO res_groups_users_rel(gid, uid) VALUES (16, ?),(26, ?),(28, ?),(31, ?)";
     private final String lastRestPartnerId = "SELECT MAX(id) AS id FROM res_partner;";
@@ -31,15 +39,33 @@ public class DaoImplementacion implements Sign {
 
     private static final Logger LOG = Logger.getLogger(DaoImplementacion.class.getName());
 
+    /**
+     * Constructor por defecto que inicializa la conexión a la base de datos
+     * llamando a {@code connectionBD()}.
+     */
     public DaoImplementacion() {
         connectionBD(); // Llama a la función de inicialización.
     }
 
+    /**
+     * Inicializa la conexión a la base de datos utilizando un pool de
+     * conexiones.
+     */
     public void connectionBD() {
         // Configuración estándar para conectarnos a nuestra base de datos
         this.pool = Pool.getPool();
     }
 
+    /**
+     * Registra un nuevo usuario en la base de datos.
+     *
+     * @param user Objeto User que contiene la información del usuario a
+     * registrar.
+     * @return El objeto User después del registro.
+     * @throws ServerErrorException Si ocurre un error en el servidor.
+     * @throws UserAlreadyExistsException Si el usuario ya existe en la base de
+     * datos.
+     */
     @Override
     public User getExecuteSignUp(User user) throws ServerErrorException, UserAlreadyExistsException {
         int lastIdPartner = 0;
@@ -126,6 +152,16 @@ public class DaoImplementacion implements Sign {
         return user;
     }
 
+    /**
+     * Autentica a un usuario en la base de datos.
+     *
+     * @param user Objeto User que contiene la información del usuario a
+     * autenticar.
+     * @return El objeto User después de la autenticación.
+     * @throws ServerErrorException Si ocurre un error en el servidor.
+     * @throws UserNotFoundException Si el usuario no se encuentra en la base de
+     * datos.
+     */
     @Override
     public User getExecuteSignIn(User user) throws ServerErrorException, UserNotFoundException {
         ResultSet rs = null;
@@ -173,6 +209,14 @@ public class DaoImplementacion implements Sign {
         return user;
     }
 
+    /**
+     * Verifica la existencia de un usuario en la base de datos.
+     *
+     * @param email El correo electrónico del usuario.
+     * @param passwd La contraseña del usuario.
+     * @return true si el usuario existe, false en caso contrario.
+     * @throws ServerErrorException Si ocurre un error en el servidor.
+     */
     public boolean existe(String email, String passwd) throws ServerErrorException {
         boolean existe = false;
         ResultSet rs = null;
@@ -207,5 +251,4 @@ public class DaoImplementacion implements Sign {
         }
         return existe;
     }
-
 }
